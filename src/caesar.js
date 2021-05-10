@@ -22,10 +22,11 @@ const caesarModule = (function () {
     if (!shift || shift < -25 || shift > 25) return false;
     //this makes shift negative if encode is false, since we want to decode
     shift = encode ? shift : -shift;
-    for (let i = 0; i < input.length; i++) {
-      result += _shift(input[i], shift);
-    }
-    return result;
+
+    return input.split("").reduce((acc, char) => {
+      acc += _shift(char, shift);
+      return acc;
+    }, "");
   }
 
   return {
