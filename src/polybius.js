@@ -4,52 +4,63 @@
 // of the anonymous function on line 6
 
 const polybiusModule = (function () {
-  //this sets up the grid for decoding
-  //extra "" is there to keep the
+  function encodeString(input) {
+    function encodeChar(char) {
+      ///We can assume that the the character is a space or letter according to the instructions
+      //Without this assumption, we could only modify the result if the character was alpha
+      if (char === " ") return char;
+      char = char.toLowerCase();
 
-  const grid = [];
-  grid["1"] = [..."abcde".split("")];
-  grid["2"] = ["f", "g", "h", "(i/j)", "k"];
-  grid["3"] = [..."lmnop".split("")];
-  grid["4"] = [..."qrstu".split("")];
-  grid["5"] = [..."vwxyz".split("")];
+      let charCode = char.charCodeAt(0) - 97;
 
-  function encodeChar(char) {
-    ///We can assume that the the character is a space or letter according to the instructions
-    //Without this assumption, we could only modify the result if the character was alpha
-    if (char === " ") return char;
-    char = char.toLowerCase();
+      //this ensures that i and j share the same code, and all proceeding characters have the correct code
+      if (charCode >= 9) charCode -= 1;
+      const columnCoord = (charCode % 5) + 1;
+      const rowCoord = Math.floor(charCode / 5) + 1;
+      return `${columnCoord}${rowCoord}`;
+    }
 
-    let charCode = char.charCodeAt(0) - 97;
-    if (charCode >= 9) charCode -= 1;
-    const columnCoord = (charCode % 5) + 1;
-    const rowCoord = Math.floor(charCode / 5) + 1;
-    return `${columnCoord}${rowCoord}`;
+    return input.split("").reduce((acc, char) => {
+      if (char === " ") acc += char;
+      else acc += encodeChar(char);
+      return acc;
+    }, "");
   }
 
-  function decodeChar(str) {
-    return grid[str[1]][parseInt(str[0]) - 1];
-  }
+  function decodeString(input) {
+    //if string length(excluding spaces) is not a multiple of 2, return false
+    if (input.replace(" ", "").length % 2 != 0) return false;
 
-  function polybius(input, encode = true) {
+    //set up the grid for decoding
+    const grid = [];
+    grid["1"] = [..."abcde".split("")];
+    grid["2"] = ["f", "g", "h", "(i/j)", "k"];
+    grid["3"] = [..."lmnop".split("")];
+    grid["4"] = [..."qrstu".split("")];
+    grid["5"] = [..."vwxyz".split("")];
+    function decodeChar(str) {
+      return grid[str[1]][parseInt(str[0]) - 1];
+    }
+
     let result = "";
-    if (encode) {
-      for (let i = 0; i < input.length; i++) {
-        if (input[i] === " ") result += " ";
-        else {
-          result += encodeChar(input[i]);
-        }
-      }
-    } else {
-      if (input.replace(" ", "").length % 2 != 0) return false;
-      for (let i = 0; i < input.length; i += 2) {
-        if (input[i] === " ") {
-          result += " ";
-          i--;
-        } else result += decodeChar(input.slice(i, i + 2));
-      }
+    for (let i = 0; i < input.length; i += 2) {
+      if (input[i] === " ") {
+        result += " ";
+
+        //This ensures when a space is found, the iterator moves forward 1 instead of 2
+        i--;
+      } else result += decodeChar(input.slice(i, i + 2)); //slice to decode 2 characters of the string at a time
     }
     return result;
+  }
+
+  function polybius(input, encoding = true) {
+    let result = "";
+    if (encoding) {
+      return encodeString(input);
+    } else {
+      return decodeString(input);
+    }
   }
 
   return {
