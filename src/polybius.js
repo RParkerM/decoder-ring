@@ -4,18 +4,22 @@
 // of the anonymous function on line 6
 
 const polybiusModule = (function () {
-  const grid = [];
-  grid["1"] = ["", ..."abcde".split("")];
-  grid["2"] = ["", "f", "g", "h", "(i/j)", "k"];
-  grid["3"] = ["", ..."lmnop".split("")];
-  grid["4"] = ["", ..."qrstu".split("")];
-  grid["5"] = ["", ..."vwxyz".split("")];
+  //this sets up the grid for decoding
+  //extra "" is there to keep the
 
-  function _encode(char) {
+  const grid = [];
+  grid["1"] = [..."abcde".split("")];
+  grid["2"] = ["f", "g", "h", "(i/j)", "k"];
+  grid["3"] = [..."lmnop".split("")];
+  grid["4"] = [..."qrstu".split("")];
+  grid["5"] = [..."vwxyz".split("")];
+
+  function encodeChar(char) {
     ///We can assume that the the character is a space or letter according to the instructions
     //Without this assumption, we could only modify the result if the character was alpha
     if (char === " ") return char;
     char = char.toLowerCase();
+
     let charCode = char.charCodeAt(0) - 97;
     if (charCode >= 9) charCode -= 1;
     const columnCoord = (charCode % 5) + 1;
@@ -23,11 +27,8 @@ const polybiusModule = (function () {
     return `${columnCoord}${rowCoord}`;
   }
 
-  function _decode(str) {
-    //this sets up the grid, extra "" is there to
-
-    // console.log(str, grid[str[1]][parseInt(str[0])]);
-    return grid[str[1]][parseInt(str[0])];
+  function decodeChar(str) {
+    return grid[str[1]][parseInt(str[0]) - 1];
   }
 
   function polybius(input, encode = true) {
@@ -36,7 +37,7 @@ const polybiusModule = (function () {
       for (let i = 0; i < input.length; i++) {
         if (input[i] === " ") result += " ";
         else {
-          result += _encode(input[i]);
+          result += encodeChar(input[i]);
         }
       }
     } else {
@@ -45,7 +46,7 @@ const polybiusModule = (function () {
         if (input[i] === " ") {
           result += " ";
           i--;
-        } else result += _decode(input.slice(i, i + 2));
+        } else result += decodeChar(input.slice(i, i + 2));
       }
     }
     return result;
