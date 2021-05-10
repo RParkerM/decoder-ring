@@ -15,28 +15,27 @@ const substitutionModule = (function () {
   function getCharFromPosition(pos) {
     return String.fromCharCode(pos + 97);
   }
-  function hasNoDuplicates(str) {
+  function hasDuplicates(str) {
     let alphabet = {};
     for (let i = 0; i < str.length; i++) {
-      if (alphabet[str[i]]) return false;
+      if (alphabet[str[i]]) return true;
       alphabet[str[i]] = true;
     }
-    return true;
+    return false;
   }
 
   function substitution(input, alphabet, encode = true) {
-    if (!alphabet || alphabet.length != 26 || !hasNoDuplicates(alphabet))
+    if (!alphabet || alphabet.length != 26 || hasDuplicates(alphabet))
       return false;
     const lowerInput = input.toLowerCase();
-    let result = "";
-    for (let i = 0; i < lowerInput.length; i++) {
-      const char = lowerInput[i];
-      if (encode && isAlpha(char)) result += alphabet[getAlphaPosition(char)];
+
+    return lowerInput.split("").reduce((acc, char) => {
+      if (encode && isAlpha(char)) acc += alphabet[getAlphaPosition(char)];
       else if (!encode && alphabet.indexOf(char) != -1)
-        result += getCharFromPosition(alphabet.indexOf(char));
-      else result += char;
-    }
-    return result;
+        acc += getCharFromPosition(alphabet.indexOf(char));
+      else acc += char;
+      return acc;
+    }, "");
   }
 
   return {
