@@ -9,8 +9,6 @@ const polybiusModule = (function () {
       ///We can assume that the the character is a space or letter according to the instructions
       //Without this assumption, we could only modify the result if the character was alpha
       if (char === " ") return char;
-      char = char.toLowerCase();
-
       let charCode = char.charCodeAt(0) - 97;
 
       //this ensures that i and j share the same code, and all proceeding characters have the correct code
@@ -19,8 +17,9 @@ const polybiusModule = (function () {
       const rowCoord = Math.floor(charCode / 5) + 1;
       return `${columnCoord}${rowCoord}`;
     }
+    const lowerInput = input.toLowerCase();
 
-    return input.split("").reduce((acc, char) => {
+    return lowerInput.split("").reduce((acc, char) => {
       if (char === " ") acc += char;
       else acc += encodeChar(char);
       return acc;
@@ -28,7 +27,8 @@ const polybiusModule = (function () {
   }
 
   function decodeString(input) {
-    //if string length(excluding spaces) is not a multiple of 2, return false
+    // if string length(excluding spaces) is not a multiple of 2, return false
+    // in production code, we would need to make sure it's a valid string by making sure it only contains pairs of numeric characters and spaces
     if (input.replace(" ", "").length % 2 != 0) return false;
 
     //set up the grid for decoding
