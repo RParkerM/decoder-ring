@@ -4,7 +4,7 @@
 // of the anonymous function on line 6
 
 const caesarModule = (function () {
-  //Helper function to write cleaner code
+  //Helper function f0r caesar function
   function _shift(char, amount) {
     char = char.toLowerCase();
     const charCode = char.charCodeAt(0);
@@ -20,6 +20,7 @@ const caesarModule = (function () {
     //guard clause for invalid values of shift
     //in production code, I would also add checks for correct types and values of input
     if (!shift || shift < -25 || shift > 25) return false;
+
     //this makes shift negative if encode is false, since we want to decode
     shift = encode ? shift : -shift;
 
