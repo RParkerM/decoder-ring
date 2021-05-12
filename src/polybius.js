@@ -9,9 +9,12 @@ const polybiusModule = (function () {
       ///We can assume that the the character is a space or letter according to the instructions
       //Without this assumption, we could only modify the result if the character was alpha
       if (char === " ") return char;
+
+      //codes 0-25 = a-z
       let charCode = char.charCodeAt(0) - 97;
 
       //this ensures that i and j share the same code, and all proceeding characters have the correct code
+      //9 is the character code of j
       if (charCode >= 9) charCode -= 1;
       const columnCoord = (charCode % 5) + 1;
       const rowCoord = Math.floor(charCode / 5) + 1;
@@ -20,8 +23,7 @@ const polybiusModule = (function () {
     const lowerInput = input.toLowerCase();
 
     return lowerInput.split("").reduce((acc, char) => {
-      if (char === " ") acc += char;
-      else acc += encodeChar(char);
+      acc += encodeChar(char);
       return acc;
     }, "");
   }
@@ -33,11 +35,12 @@ const polybiusModule = (function () {
 
     //set up the grid for decoding
     const grid = [];
-    grid["1"] = [..."abcde".split("")];
+    grid["1"] = "abcde".split("");
     grid["2"] = ["f", "g", "h", "(i/j)", "k"];
-    grid["3"] = [..."lmnop".split("")];
-    grid["4"] = [..."qrstu".split("")];
-    grid["5"] = [..."vwxyz".split("")];
+    grid["3"] = "lmnop".split("");
+    grid["4"] = "qrstu".split("");
+    grid["5"] = "vwxyz".split("");
+
     function decodeChar(str) {
       return grid[str[1]][parseInt(str[0]) - 1];
     }
@@ -55,7 +58,6 @@ const polybiusModule = (function () {
   }
 
   function polybius(input, encoding = true) {
-    let result = "";
     if (encoding) {
       return encodeString(input);
     } else {

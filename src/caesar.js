@@ -5,7 +5,7 @@
 
 const caesarModule = (function () {
   //Helper function f0r caesar function
-  function _shift(char, amount) {
+  function shift(char, amount) {
     char = char.toLowerCase();
     const charCode = char.charCodeAt(0);
 
@@ -14,18 +14,16 @@ const caesarModule = (function () {
     return String.fromCharCode(newCharCode);
   }
 
-  function caesar(input, shift, encode = true) {
-    let result = "";
-
-    //guard clause for invalid values of shift
+  function caesar(input, shiftAmount, encode = true) {
+    //guard clause for invalid values of shiftAmount
     //in production code, I would also add checks for correct types and values of input
-    if (!shift || shift < -25 || shift > 25) return false;
+    if (!shiftAmount || shiftAmount < -25 || shiftAmount > 25) return false;
 
-    //this makes shift negative if encode is false, since we want to decode
-    shift = encode ? shift : -shift;
+    //this makes shiftAmount negative if encode is false, since we want to decode
+    shiftAmount = encode ? shiftAmount : -shiftAmount;
 
     return input.split("").reduce((acc, char) => {
-      acc += _shift(char, shift);
+      acc += shift(char, shiftAmount);
       return acc;
     }, "");
   }
